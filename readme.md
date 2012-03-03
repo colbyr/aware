@@ -24,6 +24,7 @@ add the following to **application/bundles.php**
 * [Retrieving Errors](#errors)
 * [Temporary Attributes](#temp)
 * [Custom Error Messages](#messages)
+* [Custom Validation Rules](#rules)
 
 <a href="#basic"></a>
 ### Basic
@@ -37,7 +38,7 @@ To create a new Aware model, simply extend the Aware class:
 <a href="#validation"></a>
 ### Validation
 
-Aware models use Laravel's built-in Validator class. Defining validation rules for a model is simple:
+Aware models use Laravel's built-in [Validator class](http://laravel.com/docs/validation). Defining validation rules for a model is simple:
 
 ```php
 class User extends Aware {
@@ -77,6 +78,23 @@ Retrieve errors for a *specific* attribute using `Aware->errors_for('attribute')
 
 By default, `errors_for` returns an array, but flagging the `$get_html` parameter `Aware->errors_for('attribute', true)` tells Aware to return an HTML formatted list.
 
+<a href="#overide"></a>
+### Overriding Validation
+
+There are two ways to override Aware's validation:
+
+#### 1. Force Save
+`force_save()` validates the model but saves regardless of whether or not there are errors
+
+#### 2. Override Rules and Messages
+both `Aware->save($rules, $messages)` and `Aware->validate($rules, $messages)` take to parameters
+
+`$rules` is an array of Validator rules of the same form as `Aware->rules`. The same is true of the `$messages` parameter.
+
+An array that is **not** empty will override the rules or messages specified by the class for that instance of the method only.
+
+**note:** the default value for `$rules` and `$messages` is `array()`, if you pass an `array()` nothing will be overriden
+
 <a href="#temp"></a>
 ### Temporary Attributes
 
@@ -90,9 +108,33 @@ class User extends Aware {
    */
   public $temporary = array('password_confirmation');
 
+  ...
+
 }
 ```
 
 <a href="#messages"></a>
-### Retrieving Errors
+### Custom Error Messages
+
+Just like the Laravel Validator, Aware lets you set custom error messages using the [same sytax](http://laravel.com/docs/validation#custom-error-messages).
+
+```php
+class User extends Aware {
+
+  /**
+   * Aware Messages
+   */
+  public $messages = array(
+    'required' => 'The :attribute field is required.'
+  );
+
+  ...
+
+}
+```
+
+<a href="#rules"></a>
+### Custom Validation Rules
+
+You can create custom validation rules the [same way](http://laravel.com/docs/validation#custom-validation-rules) you would for the Laravel Validator.
 
