@@ -71,9 +71,11 @@ $user->save(); // returns false if model is invalid
 
 When an Aware model fails to validate, a array of error messages from the Laravel Validator are attached to the Aware object.
 
-You can retrieve errors for a specific attribute using `Aware->errors_for('attribute')`.
+Retrieve all errors with `Aware->errors`.
 
-By default, this method returns an array, but flagging the $get_html parameter `Aware->errors_for('attribute', true)` tells Aware to return an HTML formatted list.
+Retrieve errors for a *specific* attribute using `Aware->errors_for('attribute')`.
+
+By default, `errors_for` returns an array, but flagging the `$get_html` parameter `Aware->errors_for('attribute', true)` tells Aware to return an HTML formatted list.
 
 <a href="#temp"></a>
 ### Temporary Attributes
@@ -89,6 +91,7 @@ class User extends Aware {
   public $temporary = array('password_confirmation');
 
 }
+```
 
 <a href="#messages"></a>
 ### Retrieving Errors
