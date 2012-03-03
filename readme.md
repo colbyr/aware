@@ -9,10 +9,12 @@ Self validating models for Laravel PHP (extends [Eloquent ORM](https://github.co
 ### Bundle Registration
 add the following to **application/bundles.php**
 ```php
+
 'struct' => array(
   'autoloads' => array(
   'map' => array(
     'Struct'    => '(:bundle)/model.php'
   ),
 ),
+
 ```
