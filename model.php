@@ -84,7 +84,7 @@ abstract class Aware extends Model
    *
    * @return bool
    */
-  public function valid($rules=array(), $messages=array())
+  public function validate($rules=array(), $messages=array())
   {
     $valid = true;
 
@@ -111,7 +111,7 @@ abstract class Aware extends Model
   public function save($rules=array(), $messages=array())
   {
     $res; 
-    if($this->valid($rules, $messages)){
+    if($this->validate($rules, $messages)){
       $res = parent::save();
     }else{
       $res = false;

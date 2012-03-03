@@ -37,6 +37,32 @@ To create a new Aware model, simply extend the Aware class:
 <a href="#validation"></a>
 ### Validation
 
+Aware models use Laravel's built-in Validator class. Defining validation rules for a model is simple:
+
+```php
+class User extends Aware {
+
+  /**
+   * Aware validation rules
+   */
+  public $rules = array(
+    'name' => 'required',
+    'email' => 'required|email'
+  );
+
+}
+```
+
+Aware models validate themselves automatically when `Aware->save()` is called.
+
+```php
+$user = new User();
+$user->name = 'Colby';
+$user->email = 'crabideau5691@gmail.com';
+$user->save(); // returns false if model is invalid
+```
+
+**note:** You also can validate a model at an time using the `Aware->validate()` method.
 
 <a href="#errors"></a>
 ### Retrieving Errors
