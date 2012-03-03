@@ -114,6 +114,16 @@ abstract class Aware extends Model
     return $res;
   }
 
+  /**
+   * Force Save
+   *    attempts to save model even if it doesn't validate
+   */
+  public function force_save($rules=array(), $messages=array())
+  {
+    $this->validate($rules, $messages);
+    return parent::save();
+  }
+
 }
 
 /**
