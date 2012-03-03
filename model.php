@@ -16,9 +16,9 @@ abstract class Aware extends Model
   public $messages = array();
 
   /**
-   * Temporary Attributes
+   * List of attrubutes to be considered temporary
    */
-  public $temp = array();
+  public $temporary = array();
 
   /**
    * Errors
@@ -36,9 +36,9 @@ abstract class Aware extends Model
   /**
    * Get errors for field
    */
-  public function errors_for($field, $get_html=false)
+  public function errors_for($attribute, $get_html=false)
   {
-    $es = $this->errors->messages[$field];
+    $es = $this->errors->messages[$attribute];
     if($get_html){
       $html = '';
       if(!empty($es)){
@@ -52,29 +52,6 @@ abstract class Aware extends Model
       return $html;
     }else{
       return $es;
-    }
-  }
-
-  /**
-   * Set Attribute as temporary
-   *    temporary attribtues aren't saved to the database
-   *
-   *    e.g. a password confirmation field
-   */
-  public function temporary($attribute)
-  {
-    if(is_array($attribute)){
-      foreach($attribute as $attr){
-        if($this->$attr){
-          $this->temp[$attr] = $this->$attr;
-          unset($this->$attr);
-        }
-      }
-    }else{
-      if($this->$attribute){
-        $this->temp[$attribute] = $this->$attribute;
-        unset($this->$attribute);
-      }
     }
   }
 
@@ -103,6 +80,24 @@ abstract class Aware extends Model
     }
 
     return $valid;
+  }
+
+  /**
+   * Magic Method for setting Aware attributes.
+   *    - Handles temporary attributes then delegates to Eloquent
+   */
+  public function __set($key, $value)
+  {
+    // If the key is flagged as temporary, add it to the ignored attributes.
+    // Ignored attributes are not stored in the database.
+    if (in_array($key, $this->temporary))
+    {
+      $this->ignore[$key] = $value;
+    }
+    else
+    {
+      parent::__set($key, $value);
+    }
   }
 
   /**
