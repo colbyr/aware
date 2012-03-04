@@ -29,7 +29,7 @@ abstract class Aware extends Eloquent\Model
   public $temporary = array();
 
   /**
-   * Errors
+   * Aware Errors
    * 
    * @var array
    */
@@ -37,7 +37,7 @@ abstract class Aware extends Eloquent\Model
 
   /**
    * Dirty
-   *    checks if attribute is dirty
+   *    checks if model has flagged an attribute dirty
    * 
    * @param $attribute:string
    * @return bool
