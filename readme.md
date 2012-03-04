@@ -32,7 +32,7 @@ add the following to **application/bundles.php**
 * [Custom Error Messages](#messages)
 * [Custom Validation Rules](#rules)
 
-<a href="#basic"></a>
+<a name="#basic"></a>
 ### Basic
 
 Aware aims to extend the Eloquent model without changing its core functionality. All Eloquent models are compatible with Aware.
@@ -41,7 +41,7 @@ To create a new Aware model, simply extend the Aware class:
 
 `class User extends Aware {}`
 
-<a href="#validation"></a>
+<a name="#validation"></a>
 ### Validation
 
 Aware models use Laravel's built-in [Validator class](http://laravel.com/docs/validation). Defining validation rules for a model is simple:
@@ -73,7 +73,7 @@ $user->save(); // returns false if model is invalid
 
 **note:** You also can validate a model at an time using the `Aware->validate()` method.
 
-<a href="#errors"></a>
+<a name="#errors"></a>
 ### Retrieving Errors
 
 When an Aware model fails to validate, a array of error messages from the Laravel Validator are attached to the Aware object.
@@ -84,7 +84,7 @@ Retrieve errors for a *specific* attribute using `Aware->errors_for('attribute')
 
 By default, `errors_for` returns an array, but flagging the `$get_html` parameter `Aware->errors_for('attribute', true)` tells Aware to return an HTML formatted list.
 
-<a href="#overide"></a>
+<a name="#overide"></a>
 ### Overriding Validation
 
 There are two ways to override Aware's validation:
@@ -101,7 +101,7 @@ An array that is **not** empty will override the rules or messages specified by 
 
 **note:** the default value for `$rules` and `$messages` is `array()`, if you pass an `array()` nothing will be overriden
 
-<a href="#temp"></a>
+<a name="#temp"></a>
 ### Temporary Attributes
 
 Aware also provides a convenient way to ignore attributes which may be necessary for validation but should not be saved to the database. Just include the attribute key in the temporary array
@@ -119,7 +119,7 @@ class User extends Aware {
 }
 ```
 
-<a href="#messages"></a>
+<a name="#messages"></a>
 ### Custom Error Messages
 
 Just like the Laravel Validator, Aware lets you set custom error messages using the [same sytax](http://laravel.com/docs/validation#custom-error-messages).
@@ -139,7 +139,7 @@ class User extends Aware {
 }
 ```
 
-<a href="#rules"></a>
+<a name="#rules"></a>
 ### Custom Validation Rules
 
 You can create custom validation rules the [same way](http://laravel.com/docs/validation#custom-validation-rules) you would for the Laravel Validator.
