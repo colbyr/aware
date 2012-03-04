@@ -193,6 +193,6 @@ abstract class Aware extends Eloquent\Model
 }
 
 /**
- * Model Exception
+ * Aware Exception
  */
 class AwareException extends Exception {}
