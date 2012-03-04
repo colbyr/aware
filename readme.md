@@ -12,9 +12,10 @@ add the following to **application/bundles.php**
 ```php
 'aware' => array(
   'autoloads' => array(
-  'map' => array(
-    'Aware'    => '(:bundle)/model.php'
-  ),
+    'map' => array(
+      'Aware' => '(:bundle)/model.php'
+    ),
+  )
 ),
 ```
 ## Guide
