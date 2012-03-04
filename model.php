@@ -1,10 +1,13 @@
 <?php
 
+use Laravel\Messages;
+use Eloquent\Model;
+
 /**
  * Aware Models
  *    Self-validating Eloquent Models
  */
-abstract class Aware extends Eloquent\Model
+abstract class Aware extends Model
 {
 
   /**
@@ -35,6 +38,18 @@ abstract class Aware extends Eloquent\Model
    */
   public $errors;
 
+  /**
+   * Create new Aware instance
+   *
+   * @param Array $attributes
+   * @return void
+   */
+  public function __construct($attributes = array())
+  {
+    // initialize empty messages object
+    $this->errors = new Messages();
+    parent::__construct($attributes);
+  }
 
   /**
    * Validate the Model
@@ -67,7 +82,7 @@ abstract class Aware extends Eloquent\Model
       // if the model is valid, unset old errors
       if($valid)
       {
-        unset($this->errors);
+        $this->errors->messages = array();
       }
       else // otherwise set the new ones
       { 
