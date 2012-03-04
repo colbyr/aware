@@ -1,5 +1,5 @@
 # Aware Model
-Self validating models for Laravel PHP (extends [Eloquent ORM](https://github.com/taylorotwell/eloquent))
+Self validating models for [Eloquent ORM](https://github.com/taylorotwell/eloquent)
 
 ## Installation
 
