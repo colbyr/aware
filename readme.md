@@ -6,6 +6,9 @@ Self validating models for Laravel PHP (extends [Eloquent ORM](https://github.co
 ### Dependencies
 1. [Eloquent ORM](https://github.com/taylorotwell/eloquent)
 
+### Artisan
+`php artisan bundle:install aware`
+
 ### Bundle Registration
 add the following to **application/bundles.php**
 
