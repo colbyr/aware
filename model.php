@@ -10,28 +10,28 @@ abstract class Aware extends Eloquent\Model
   /**
    * Aware Validation Rules
    * 
-   * @var array
+   * @var Array $rules
    */
   public static $rules = array();
 
   /**
    * Aware Validation Messages
    * 
-   * @var array
+   * @var Array $messages
    */
   public static $messages = array();
 
   /**
    * Attrubutes Aware shouldn't save to the database
    * 
-   * @var array
+   * @var Array $temporary
    */
   public $temporary = array();
 
   /**
    * Aware Errors
    * 
-   * @var array
+   * @var Laravel\Messages $errors
    */
   public $errors;
 
@@ -48,46 +48,6 @@ abstract class Aware extends Eloquent\Model
   }
 
   /**
-   * Get errors for attribute
-   * 
-   * @param $attribute:string
-   * @return array
-   */
-  public function errors_for($attribute)
-  {
-    return isset($this->errors->messages[$attribute]) ? $this->errors->messages[$attribute] : array();
-  }
-
-  /**
-   * Convenience method for getting html list of errors
-   * 
-   * @param $attribute:string
-   * @return string
-   */
-  public function html_errors_for($attribute)
-  {
-
-    // get any errors for the given attribute
-    $errors = isset($this->errors->messages[$attribute]) ? $this->errors->messages[$attribute] : array();
-
-    $html = '';
-
-    // build html
-    if(!empty($errors))
-    {
-      $html .= '<ul class="errors">';
-      foreach($errors as $error)
-      {
-        $html .= '<li>' . $error . '</li>';
-      }
-      $html .= '</ul>';
-    }
-
-    return $html;
-
-  }
-
-  /**
    * Validate the Model
    *    runs the validator and binds any errors to the model
    *
@@ -95,7 +55,7 @@ abstract class Aware extends Eloquent\Model
    * @param $messages:array
    * @return bool
    */
-  public function validate($rules=array(), $messages=array())
+  public function valid($rules=array(), $messages=array())
   {
 
     // innocent until proven guilty
@@ -161,7 +121,7 @@ abstract class Aware extends Eloquent\Model
    */
   public function save($rules=array(), $messages=array())
   {
-    if($this->validate($rules, $messages))
+    if($this->valid($rules, $messages))
     {
       return parent::save();
     }
@@ -183,7 +143,7 @@ abstract class Aware extends Eloquent\Model
   {
 
     // validate the model
-    $this->validate($rules, $messages);
+    $this->valid($rules, $messages);
 
     // save regardless of the result of validation
     return parent::save();

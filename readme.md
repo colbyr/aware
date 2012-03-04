@@ -76,13 +76,13 @@ $user->save(); // returns false if model is invalid
 <a name="errors"></a>
 ### Retrieving Errors
 
-When an Aware model fails to validate, a array of error messages from the Laravel Validator are attached to the Aware object.
+When an Aware model fails to validate, a Laravel\Messages object is attached to the Aware object.
 
-Retrieve all errors with `Aware->errors`.
+Retrieve all errors with `Aware->errors->all()`.
 
-Retrieve errors for a *specific* attribute using `Aware->errors_for('attribute')`.
+Retrieve errors for a *specific* attribute using `Aware->errors->get('attribute')`.
 
-**note:** Aware also provides a convenience method for retrieving errors formatted as an html list: `Aware->html_errors_for('attribute')`
+**note:** Aware leverages Laravel's Messages object which has an [simple and elegant method](http://laravel.com/docs/validation#retrieving-error-messages) of formatting errors
 
 <a name="overide"></a>
 ### Overriding Validation
