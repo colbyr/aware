@@ -1,8 +1,6 @@
 <?php
 
-use Eloquent\Model as Model;
-
-abstract class Aware extends Model
+abstract class Aware extends Eloquent\Model
 {
 
   /**
@@ -67,7 +65,7 @@ abstract class Aware extends Model
 
     if(!empty($rules) || $this->rules){
 
-      $data = array_merge($this->attributes, $this->temp);
+      $data = array_merge($this->attributes, $this->ignore);
 
       $validator = Validator::make($data, (empty($rules)) ? $this->rules : $rules, (empty($rules)) ? $this->messages : $messages);
       $valid = $validator->valid();
