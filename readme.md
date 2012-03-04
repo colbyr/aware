@@ -71,7 +71,7 @@ $user->email = 'crabideau5691@gmail.com';
 $user->save(); // returns false if model is invalid
 ```
 
-**note:** You also can validate a model at an time using the `Aware->validate()` method.
+**note:** You also can validate a model at an time using the `Aware->valid()` method.
 
 <a name="errors"></a>
 ### Retrieving Errors
@@ -93,7 +93,7 @@ There are two ways to override Aware's validation:
 `force_save()` validates the model but saves regardless of whether or not there are errors
 
 #### 2. Override Rules and Messages
-both `Aware->save($rules, $messages)` and `Aware->validate($rules, $messages)` take to parameters
+both `Aware->save($rules, $messages)` and `Aware->valid($rules, $messages)` take to parameters
 
 `$rules` is an array of Validator rules of the same form as `Aware->rules`. The same is true of the `$messages` parameter.
 
