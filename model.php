@@ -73,7 +73,8 @@ abstract class Aware extends Eloquent\Model
     $html = '';
 
     // build html
-    if(!empty($errors)){
+    if(!empty($errors))
+    {
       $html .= '<ul class="errors">';
       foreach($errors as $error)
       {
@@ -100,7 +101,8 @@ abstract class Aware extends Eloquent\Model
     // innocent until proven guilty
     $valid = true;
 
-    if(!empty($rules) || static::$rules){
+    if(!empty($rules) || static::$rules)
+    {
 
       // merge model attributes and ignored values for validation
       $data = array_merge($this->attributes, $this->ignore);
