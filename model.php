@@ -35,17 +35,6 @@ abstract class Aware extends Eloquent\Model
    */
   public $errors;
 
-  /**
-   * Dirty
-   *    checks if model has flagged an attribute dirty
-   * 
-   * @param $attribute:string
-   * @return bool
-   */
-  public function dirty($attribute)
-  {
-    return !empty($this->dirty[$attribute]);
-  }
 
   /**
    * Validate the Model
