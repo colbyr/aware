@@ -6,12 +6,12 @@ abstract class Aware extends Eloquent\Model
   /**
    * Validation Rules
    */
-  public $rules = array();
+  public static $rules = array();
 
   /**
    * Validation Messages
    */
-  public $messages = array();
+  public static $messages = array();
 
   /**
    * List of attrubutes to be considered temporary
@@ -63,11 +63,11 @@ abstract class Aware extends Eloquent\Model
   {
     $valid = true;
 
-    if(!empty($rules) || $this->rules){
+    if(!empty($rules) || static::$rules){
 
       $data = array_merge($this->attributes, $this->ignore);
 
-      $validator = Validator::make($data, (empty($rules)) ? $this->rules : $rules, (empty($rules)) ? $this->messages : $messages);
+      $validator = Validator::make($data, (empty($rules)) ? static::$rules : $rules, (empty($rules)) ? static::$messages : $messages);
       $valid = $validator->valid();
 
       if($valid){
