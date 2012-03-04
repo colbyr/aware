@@ -82,7 +82,7 @@ Retrieve all errors with `Aware->errors`.
 
 Retrieve errors for a *specific* attribute using `Aware->errors_for('attribute')`.
 
-By default, `errors_for` returns an array, but flagging the `$get_html` parameter `Aware->errors_for('attribute', true)` tells Aware to return an HTML formatted list.
+**note:** Aware also provides a convenience method for retrieving errors formatted as an html list: `Aware->html_errors_for('attribute')`
 
 <a name="overide"></a>
 ### Overriding Validation
