@@ -1,80 +1,128 @@
 <?php
 
+/**
+ * Aware Models
+ *    Self-validating Eloquent Models
+ */
 abstract class Aware extends Eloquent\Model
 {
 
   /**
-   * Validation Rules
+   * Aware Validation Rules
+   * 
+   * @var array
    */
   public static $rules = array();
 
   /**
-   * Validation Messages
+   * Aware Validation Messages
+   * 
+   * @var array
    */
   public static $messages = array();
 
   /**
-   * List of attrubutes to be considered temporary
+   * Attrubutes Aware shouldn't save to the database
+   * 
+   * @var array
    */
   public $temporary = array();
 
   /**
    * Errors
+   * 
+   * @var array
    */
   public $errors;
 
   /**
-   * is field dirty?
+   * Dirty
+   *    checks if attribute is dirty
+   * 
+   * @param $attribute:string
+   * @return bool
    */
-  public function dirty($str)
+  public function dirty($attribute)
   {
-    return !empty($this->dirty[$str]);
+    return !empty($this->dirty[$attribute]);
   }
 
   /**
-   * Get errors for field
+   * Get errors for attribute
+   * 
+   * @param $attribute:string
+   * @return array
    */
-  public function errors_for($attribute, $get_html=false)
+  public function errors_for($attribute)
   {
-    $es = $this->errors->messages[$attribute];
-    if($get_html){
-      $html = '';
-      if(!empty($es)){
-        $html .= '<ul class="errors">';
-        foreach($es as $e)
-        {
-          $html .= '<li>' . $e . '</li>';
-        }
-        $html .= '</ul>';
+    return isset($this->errors->messages[$attribute]) ? $this->errors->messages[$attribute] : array();
+  }
+
+  /**
+   * Convenience method for getting html list of errors
+   * 
+   * @param $attribute:string
+   * @return string
+   */
+  public function html_errors_for($attribute)
+  {
+
+    // get any errors for the given attribute
+    $errors = isset($this->errors->messages[$attribute]) ? $this->errors->messages[$attribute] : array();
+
+    $html = '';
+
+    // build html
+    if(!empty($errors)){
+      $html .= '<ul class="errors">';
+      foreach($errors as $error)
+      {
+        $html .= '<li>' . $error . '</li>';
       }
-      return $html;
-    }else{
-      return $es;
+      $html .= '</ul>';
     }
+
+    return $html;
+
   }
 
   /**
    * Validate the Model
    *    runs the validator and binds any errors to the model
    *
+   * @param $rules:array
+   * @param $messages:array
    * @return bool
    */
   public function validate($rules=array(), $messages=array())
   {
+
+    // innocent until proven guilty
     $valid = true;
 
     if(!empty($rules) || static::$rules){
 
+      // merge model attributes and ignored values for validation
       $data = array_merge($this->attributes, $this->ignore);
 
-      $validator = Validator::make($data, (empty($rules)) ? static::$rules : $rules, (empty($rules)) ? static::$messages : $messages);
+      // check for overrides
+      $rules = (empty($rules)) ? static::$rules : $rules;
+      $messages = (empty($rules)) ? static::$messages : $messages;
+
+      // construct the validator
+      $validator = Validator::make($data, $rules, $messages);
       $valid = $validator->valid();
 
-      if($valid){
+      // if the model is valid, unset old errors
+      if($valid)
+      {
         unset($this->errors);
-      }else{
+      }
+      else // otherwise set the new ones
+      { 
         $this->errors = $validator->errors;
       }
+
     }
 
     return $valid;
@@ -83,6 +131,10 @@ abstract class Aware extends Eloquent\Model
   /**
    * Magic Method for setting Aware attributes.
    *    - Handles temporary attributes then delegates to Eloquent
+   *
+   * @param $key
+   * @param $value
+   * @return void
    */
   public function __set($key, $value)
   {
@@ -100,26 +152,40 @@ abstract class Aware extends Eloquent\Model
 
   /**
    * Save
+   *
+   * @param $rules:array
+   * @param $messages:array
+   * @return bool
    */
   public function save($rules=array(), $messages=array())
   {
-    $res; 
-    if($this->validate($rules, $messages)){
-      $res = parent::save();
-    }else{
-      $res = false;
+    if($this->validate($rules, $messages))
+    {
+      return parent::save();
     }
-    return $res;
+    else
+    {
+      return false;
+    }
   }
 
   /**
    * Force Save
    *    attempts to save model even if it doesn't validate
+   *
+   * @param $rules:array
+   * @param $messages:array
+   * @return bool
    */
   public function force_save($rules=array(), $messages=array())
   {
+
+    // validate the model
     $this->validate($rules, $messages);
+
+    // save regardless of the result of validation
     return parent::save();
+
   }
 
 }
@@ -127,4 +193,4 @@ abstract class Aware extends Eloquent\Model
 /**
  * Model Exception
  */
-class ModelException extends Exception {}
+class AwareException extends Exception {}
