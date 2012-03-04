@@ -18,6 +18,7 @@ add the following to **application/bundles.php**
   )
 ),
 ```
+
 ## Guide
 
 * [Basic](#basic)
