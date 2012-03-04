@@ -23,6 +23,7 @@ add the following to **application/bundles.php**
 * [Basic](#basic)
 * [Validation](#validation)
 * [Retrieving Errors](#errors)
+* [Overriding Validation](#temp)
 * [Temporary Attributes](#temp)
 * [Custom Error Messages](#messages)
 * [Custom Validation Rules](#rules)
