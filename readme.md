@@ -52,7 +52,7 @@ class User extends Aware {
   /**
    * Aware validation rules
    */
-  public $rules = array(
+  public static $rules = array(
     'name' => 'required',
     'email' => 'required|email'
   );
@@ -130,7 +130,7 @@ class User extends Aware {
   /**
    * Aware Messages
    */
-  public $messages = array(
+  public static $messages = array(
     'required' => 'The :attribute field is required.'
   );
 
