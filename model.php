@@ -125,14 +125,7 @@ abstract class Aware extends Model
    */
   public function save($rules=array(), $messages=array())
   {
-    if($this->valid($rules, $messages))
-    {
-      return parent::save();
-    }
-    else
-    {
-      return false;
-    }
+    return ($this->valid($rules, $messages)) ? parent::save() : false;
   }
 
   /**
