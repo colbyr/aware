@@ -73,7 +73,7 @@ abstract class Aware extends Model
 
       // check for overrides
       $rules = (empty($rules)) ? static::$rules : $rules;
-      $messages = (empty($rules)) ? static::$messages : $messages;
+      $messages = (empty($messages)) ? static::$messages : $messages;
 
       // construct the validator
       $validator = Validator::make($data, $rules, $messages);
