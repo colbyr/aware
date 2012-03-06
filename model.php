@@ -65,7 +65,7 @@ abstract class Aware extends Model
     // innocent until proven guilty
     $valid = true;
 
-    if(!empty($rules) || static::$rules)
+    if(!empty($rules) || !empty(static::$rules))
     {
 
       // merge model attributes and ignored values for validation
