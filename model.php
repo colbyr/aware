@@ -12,28 +12,28 @@ abstract class Aware extends Model
 
   /**
    * Aware Validation Rules
-   * 
+   *
    * @var Array $rules
    */
   public static $rules = array();
 
   /**
    * Aware Validation Messages
-   * 
+   *
    * @var Array $messages
    */
   public static $messages = array();
 
   /**
    * Attrubutes Aware shouldn't save to the database
-   * 
+   *
    * @var Array $temporary
    */
   public $temporary = array();
 
   /**
    * Aware Errors
-   * 
+   *
    * @var Laravel\Messages $errors
    */
   public $errors;
@@ -68,12 +68,18 @@ abstract class Aware extends Model
     if(!empty($rules) || !empty(static::$rules))
     {
 
-      // merge model attributes and ignored values for validation
-      $data = array_merge($this->attributes, $this->ignore);
+      // merge model dirty attributes and ignored values for validation
+      $data = array_merge($this->dirty, $this->ignore);
 
       // check for overrides
       $rules = (empty($rules)) ? static::$rules : $rules;
       $messages = (empty($messages)) ? static::$messages : $messages;
+
+      // if the model exists, this is an update, so just validate the fields
+      // that are being updated
+      if ($this->exists) {
+        $rules = array_intersect_key($rules, $data);
+      }
 
       // construct the validator
       $validator = Validator::make($data, $rules, $messages);
@@ -85,7 +91,7 @@ abstract class Aware extends Model
         $this->errors->messages = array();
       }
       else // otherwise set the new ones
-      { 
+      {
         $this->errors = $validator->errors;
       }
 
