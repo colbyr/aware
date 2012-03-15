@@ -68,12 +68,18 @@ abstract class Aware extends Model
     if(!empty($rules) || !empty(static::$rules))
     {
 
-      // merge model attributes and ignored values for validation
+      // merge model dirty attributes and ignored values for validation
       $data = array_merge($this->dirty, $this->ignore);
 
       // check for overrides
       $rules = (empty($rules)) ? static::$rules : $rules;
       $messages = (empty($messages)) ? static::$messages : $messages;
+
+      // if the model exists, this is an update, so just validate the fields
+      // that are being updated
+      if ($this->exists) {
+        $rules = array_intersect_key($rules, $data);
+      }
 
       // construct the validator
       $validator = Validator::make($data, $rules, $messages);
