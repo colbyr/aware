@@ -118,7 +118,13 @@ abstract class Aware extends Model
     }
     else
     {
-      parent::__set($key, $value);
+      // why bother setting it if it's the same value?
+      // doing this solves the problem of validating unique fields against
+      // themselves
+      if (!array_key_exists($key, $this->attributes) || $value !== $this->attributes[$key])
+      {
+        parent::__set($key, $value);
+      }
     }
   }
 
