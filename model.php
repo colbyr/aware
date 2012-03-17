@@ -1,7 +1,6 @@
 <?php
 
-use Laravel\Messages;
-use Eloquent\Model;
+use Laravel\Messages, Eloquent\Model;
 
 /**
  * Aware Models
@@ -30,6 +29,8 @@ abstract class Aware extends Model
    * @var Array $temporary
    */
   public $temporary = array();
+
+  public $ignore = array();
 
   /**
    * Aware Errors
@@ -69,7 +70,7 @@ abstract class Aware extends Model
     {
 
       // merge model dirty attributes and ignored values for validation
-      $data = array_merge($this->dirty, $this->ignore);
+      $data = array_merge($this->get_dirty(), $this->ignore);
 
       // check for overrides
       $rules = (empty($rules)) ? static::$rules : $rules;
@@ -160,8 +161,3 @@ abstract class Aware extends Model
   }
 
 }
-
-/**
- * Aware Exception
- */
-class AwareException extends Exception {}
