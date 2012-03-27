@@ -1,12 +1,12 @@
 <?php
 
-use Laravel\Messages, Eloquent\Model;
+use Laravel\Messages;
 
 /**
  * Aware Models
  *    Self-validating Eloquent Models
  */
-abstract class Aware extends Model
+abstract class Aware extends Eloquent
 {
 
   /**
@@ -22,15 +22,6 @@ abstract class Aware extends Model
    * @var Array $messages
    */
   public static $messages = array();
-
-  /**
-   * Attrubutes Aware shouldn't save to the database
-   *
-   * @var Array $temporary
-   */
-  public $temporary = array();
-
-  public $ignore = array();
 
   /**
    * Aware Errors
@@ -70,7 +61,7 @@ abstract class Aware extends Model
     {
 
       // merge model dirty attributes and ignored values for validation
-      $data = array_merge($this->get_dirty(), $this->ignore);
+      $data = $this->get_dirty();
 
       // check for overrides
       $rules = (empty($rules)) ? static::$rules : $rules;
@@ -111,22 +102,15 @@ abstract class Aware extends Model
    */
   public function __set($key, $value)
   {
-    // If the key is flagged as temporary, add it to the ignored attributes.
-    // Ignored attributes are not stored in the database.
-    if (in_array($key, $this->temporary))
+
+    // why bother setting it if it's the same value?
+    // doing this solves the problem of validating unique fields against
+    // themselves
+    if (!array_key_exists($key, $this->attributes) || $value !== $this->$key)
     {
-      $this->ignore[$key] = $value;
+      parent::__set($key, $value);
     }
-    else
-    {
-      // why bother setting it if it's the same value?
-      // doing this solves the problem of validating unique fields against
-      // themselves
-      if (!array_key_exists($key, $this->attributes) || $value !== $this->attributes[$key])
-      {
-        parent::__set($key, $value);
-      }
-    }
+
   }
 
   /**
