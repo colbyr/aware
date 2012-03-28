@@ -114,15 +114,35 @@ abstract class Aware extends Eloquent
   }
 
   /**
+   * onSave
+   *  called evertime a model is saved - to halt the save, return false
+   *
+   * @return bool
+   */
+  public function onSave()
+  {
+    return true;
+  }
+
+  /**
    * Save
    *
-   * @param $rules:array
-   * @param $messages:array
+   * @param array $rules:array
+   * @param array $messages
+   * @param function $onSave
    * @return Model|bool
    */
-  public function save($rules=array(), $messages=array())
+  public function save($rules=array(), $messages=array(), $onSave=null)
   {
-    return ($this->valid($rules, $messages)) ? parent::save() : false;
+
+    // validate
+    $valid = $this->valid($rules, $messages);
+
+    // evaluate onSave
+    $before = is_null($onSave) ? $this->onSave() : $onSave();
+
+    // check before & valid, then pass to parent
+    return ($before && $valid) ? parent::save() : false;
   }
 
   /**
@@ -133,14 +153,17 @@ abstract class Aware extends Eloquent
    * @param $messages:array
    * @return Model|bool
    */
-  public function force_save($rules=array(), $messages=array())
+  public function force_save($rules=array(), $messages=array(), $onSave=null)
   {
 
     // validate the model
     $this->valid($rules, $messages);
 
+    // execute on save
+    $before = is_null($onSave) ? $this->onSave() : $onSave();
+
     // save regardless of the result of validation
-    return parent::save();
+    return $before ? parent::save() : false;
 
   }
 
