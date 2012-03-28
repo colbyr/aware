@@ -139,7 +139,7 @@ abstract class Aware extends Eloquent
     $valid = $this->valid($rules, $messages);
 
     // evaluate onSave
-    $before = is_null($onSave) ? $this->onSave() : $onSave();
+    $before = is_null($onSave) ? $this->onSave() : $onSave($this);
 
     // check before & valid, then pass to parent
     return ($before && $valid) ? parent::save() : false;
@@ -160,7 +160,7 @@ abstract class Aware extends Eloquent
     $this->valid($rules, $messages);
 
     // execute on save
-    $before = is_null($onSave) ? $this->onSave() : $onSave();
+    $before = is_null($onSave) ? $this->onSave() : $onSave($this);
 
     // save regardless of the result of validation
     return $before ? parent::save() : false;
