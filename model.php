@@ -118,7 +118,7 @@ abstract class Aware extends Eloquent
    *
    * @param $rules:array
    * @param $messages:array
-   * @return bool
+   * @return Model|bool
    */
   public function save($rules=array(), $messages=array())
   {
@@ -131,7 +131,7 @@ abstract class Aware extends Eloquent
    *
    * @param $rules:array
    * @param $messages:array
-   * @return bool
+   * @return Model|bool
    */
   public function force_save($rules=array(), $messages=array())
   {
