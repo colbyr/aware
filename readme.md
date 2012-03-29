@@ -28,7 +28,7 @@ add the following to **application/bundles.php**
 3. overridable **onSave** function
 
 ### If something is broken...
-* Aware 2.0.0 only supports Laravel 3.1, if you're using Laravel >= 3.0 download [version 1.2](https://github.com/crabideau5691/aware/tags)
+* Aware 2.0.0 only supports Laravel 3.1, if you're using Laravel <= 3.0 download [version 1.2](https://github.com/crabideau5691/aware/tags)
 * Remember Aware no longer supports temporary attributes! if a validation rule isn't used every time put it in the controller
 
 ## Guide
@@ -42,7 +42,7 @@ add the following to **application/bundles.php**
 * [Custom Validation Rules](#rules)
 
 <a name="basic"></a>
-### Basic
+## Basic
 
 Aware aims to extend the Eloquent model without changing its core functionality. All Eloquent models are compatible with Aware.
 
@@ -51,7 +51,7 @@ To create a new Aware model, simply extend the Aware class:
 `class User extends Aware {}`
 
 <a name="validation"></a>
-### Validation
+## Validation
 
 Aware models use Laravel's built-in [Validator class](http://laravel.com/docs/validation). Defining validation rules for a model is simple:
 
@@ -83,7 +83,7 @@ $user->save(); // returns false if model is invalid
 **note:** You also can validate a model at an time using the `Aware->valid()` method.
 
 <a name="errors"></a>
-### Retrieving Errors
+## Retrieving Errors
 
 When an Aware model fails to validate, a Laravel\Messages object is attached to the Aware object.
 
@@ -94,7 +94,7 @@ Retrieve errors for a *specific* attribute using `Aware->errors->get('attribute'
 **note:** Aware leverages Laravel's Messages object which has an [simple and elegant method](http://laravel.com/docs/validation#retrieving-error-messages) of formatting errors
 
 <a name="overide"></a>
-### Overriding Validation
+## Overriding Validation
 
 There are two ways to override Aware's validation:
 
@@ -111,7 +111,7 @@ An array that is **not** empty will override the rules or messages specified by 
 **note:** the default value for `$rules` and `$messages` is `array()`, if you pass an `array()` nothing will be overriden
 
 <a name="onsave"></a>
-### onSave
+## onSave
 
 Aware provides a convenient method for performing actions when either `$model->save()` is called. For example, use `onSave` to automatically hash a users password:
 
@@ -136,7 +136,7 @@ Notice that `onSave` returns a boolean. If you would like to halt `save`, return
 
 **Note:** `force_save()` has it's own `onForceSave()` method, which behaves just like `onSave`.
 
-#### Overriding onSave
+### Overriding onSave
 
 Just like, `$rules` and `$messages`, `onSave` can be overridden at call time. Simply pass a closure to the save function.
 
@@ -149,7 +149,7 @@ $user-save(array(), array(), function ($model) {
 **Note:** the closure should have one parameter as it will be passed a reference to the model being saved.
 
 <a name="messages"></a>
-### Custom Error Messages
+## Custom Error Messages
 
 Just like the Laravel Validator, Aware lets you set custom error messages using the [same sytax](http://laravel.com/docs/validation#custom-error-messages).
 
@@ -169,7 +169,7 @@ class User extends Aware {
 ```
 
 <a name="rules"></a>
-### Custom Validation Rules
+## Custom Validation Rules
 
 You can create custom validation rules the [same way](http://laravel.com/docs/validation#custom-validation-rules) you would for the Laravel Validator.
 
