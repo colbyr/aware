@@ -123,6 +123,17 @@ abstract class Aware extends Eloquent
   }
 
   /**
+   * onForceSave
+   *  called evertime a model is force_saved - to halt the force_save, return false
+   *
+   * @return bool
+   */
+  public function onForceSave()
+  {
+    return true;
+  }
+
+  /**
    * Save
    *
    * @param array $rules:array
@@ -152,14 +163,14 @@ abstract class Aware extends Eloquent
    * @param $messages:array
    * @return Aware|bool
    */
-  public function force_save($rules=array(), $messages=array(), $onSave=null)
+  public function force_save($rules=array(), $messages=array(), $onForceSave=null)
   {
 
     // validate the model
     $this->valid($rules, $messages);
 
-    // execute on save
-    $before = is_null($onSave) ? $this->onSave() : $onSave($this);
+    // execute onForceSave
+    $before = is_null($onForceSave) ? $this->onForceSave() : $onForceSave($this);
 
     // save regardless of the result of validation
     return $before ? parent::save() : false;

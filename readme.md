@@ -22,13 +22,22 @@ add the following to **application/bundles.php**
 ),
 ```
 
+## What's new in 2.0.0?
+1. eloquent 2 / Laravel 3.1 support
+2. removed temporary attributes
+3. overridable **onSave** function
+
+### If something is broken...
+* Aware 2.0.0 only supports Laravel 3.1, if you're using Laravel >= 3.0 download [version 1.2](https://github.com/crabideau5691/aware/tags)
+* Remember Aware no longer supports temporary attributes! if a validation rule isn't used every time put it in the controller
+
 ## Guide
 
 * [Basic](#basic)
 * [Validation](#validation)
 * [Retrieving Errors](#errors)
-* [Overriding Validation](#temp)
-* [Temporary Attributes](#temp)
+* [Overriding Validation](#override)
+* [onSave](#onsave)
 * [Custom Error Messages](#messages)
 * [Custom Validation Rules](#rules)
 
@@ -102,22 +111,40 @@ An array that is **not** empty will override the rules or messages specified by 
 **note:** the default value for `$rules` and `$messages` is `array()`, if you pass an `array()` nothing will be overriden
 
 <a name="temp"></a>
-### Temporary Attributes
+### onSave
 
-Aware also provides a convenient way to ignore attributes which may be necessary for validation but should not be saved to the database. Just include the attribute key in the temporary array
+Aware provides a convenient method for performing actions when either `$model->save()` is called. For example, use `onSave` to automatically hash a users password:
 
 ```php
 class User extends Aware {
 
-  /**
-   * Aware Temporary Attributes
-   */
-  public $temporary = array('password_confirmation');
+  public function onSave()
+  {
+    // if there's a new password, hash it
+    if($this->changed('password'))
+    {
+      $this->set_password(Hash::make($this->password));
+    }
 
-  ...
+    return true;
+  }
 
 }
 ```
+
+**Note:** `force_save()` has it's own `onForceSave()` method
+
+Notice that `onSave` returns a boolean. If you would like to halt `save`, return false.
+
+Just like, `$rules` and `$messages`, `onSave` can be overridden at call time. Simply pass a closure to the save function.
+
+```
+$user-save(array(), array(), function ($model) {
+  echo "saving!";
+  return true;
+});
+```
+Note, the closure should have one parameter as it will be passed a reference to the model being saved.
 
 <a name="messages"></a>
 ### Custom Error Messages
