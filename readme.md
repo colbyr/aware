@@ -1,10 +1,7 @@
 # Aware Model
-Self validating models for [Eloquent ORM](https://github.com/taylorotwell/eloquent)
+Self validating models for Laravel 3.1's built-in Eloquent ORM
 
 ## Installation
-
-### Dependencies
-1. [Eloquent ORM](https://github.com/taylorotwell/eloquent)
 
 ### Artisan
 `php artisan bundle:install aware`
