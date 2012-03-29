@@ -12,14 +12,14 @@ abstract class Aware extends Eloquent
   /**
    * Aware Validation Rules
    *
-   * @var Array $rules
+   * @var array $rules
    */
   public static $rules = array();
 
   /**
    * Aware Validation Messages
    *
-   * @var Array $messages
+   * @var array $messages
    */
   public static $messages = array();
 
@@ -33,7 +33,7 @@ abstract class Aware extends Eloquent
   /**
    * Create new Aware instance
    *
-   * @param Array $attributes
+   * @param array $attributes
    * @return void
    */
   public function __construct($attributes = array())
@@ -47,8 +47,8 @@ abstract class Aware extends Eloquent
    * Validate the Model
    *    runs the validator and binds any errors to the model
    *
-   * @param $rules:array
-   * @param $messages:array
+   * @param array $rules
+   * @param array $messages
    * @return bool
    */
   public function valid($rules=array(), $messages=array())
@@ -94,18 +94,16 @@ abstract class Aware extends Eloquent
 
   /**
    * Magic Method for setting Aware attributes.
-   *    - Handles temporary attributes then delegates to Eloquent
+   *    ignores unchanged attibutes delegates to Eloquent
    *
-   * @param $key
-   * @param $value
+   * @param string $key
+   * @param string|num|bool|etc $value
    * @return void
    */
   public function __set($key, $value)
   {
 
-    // why bother setting it if it's the same value?
-    // doing this solves the problem of validating unique fields against
-    // themselves
+    // only update an attribute if there's a change
     if (!array_key_exists($key, $this->attributes) || $value !== $this->$key)
     {
       parent::__set($key, $value);
@@ -129,8 +127,8 @@ abstract class Aware extends Eloquent
    *
    * @param array $rules:array
    * @param array $messages
-   * @param function $onSave
-   * @return Model|bool
+   * @param closure $onSave
+   * @return Aware|bool
    */
   public function save($rules=array(), $messages=array(), $onSave=null)
   {
@@ -143,6 +141,7 @@ abstract class Aware extends Eloquent
 
     // check before & valid, then pass to parent
     return ($before && $valid) ? parent::save() : false;
+
   }
 
   /**
@@ -151,7 +150,7 @@ abstract class Aware extends Eloquent
    *
    * @param $rules:array
    * @param $messages:array
-   * @return Model|bool
+   * @return Aware|bool
    */
   public function force_save($rules=array(), $messages=array(), $onSave=null)
   {
