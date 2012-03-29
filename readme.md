@@ -123,7 +123,7 @@ class User extends Aware {
     // if there's a new password, hash it
     if($this->changed('password'))
     {
-      $this->set_password(Hash::make($this->password));
+      $this->password = Hash::make($this->password);
     }
 
     return true;
@@ -132,9 +132,11 @@ class User extends Aware {
 }
 ```
 
-**Note:** `force_save()` has it's own `onForceSave()` method
-
 Notice that `onSave` returns a boolean. If you would like to halt `save`, return false.
+
+**Note:** `force_save()` has it's own `onForceSave()` method, which behaves just like `onSave`.
+
+#### Overriding onSave
 
 Just like, `$rules` and `$messages`, `onSave` can be overridden at call time. Simply pass a closure to the save function.
 
@@ -144,7 +146,7 @@ $user-save(array(), array(), function ($model) {
   return true;
 });
 ```
-Note, the closure should have one parameter as it will be passed a reference to the model being saved.
+**Note:** the closure should have one parameter as it will be passed a reference to the model being saved.
 
 <a name="messages"></a>
 ### Custom Error Messages
