@@ -61,7 +61,7 @@ abstract class Aware extends Eloquent
     {
 
       // merge model dirty attributes and ignored values for validation
-      $data = $this->get_dirty();
+      $data = ($this->exists) ? $this->get_dirty() : $this->attributes;
 
       // check for overrides
       $rules = (empty($rules)) ? static::$rules : $rules;
