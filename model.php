@@ -60,18 +60,24 @@ abstract class Aware extends Eloquent
     if(!empty($rules) || !empty(static::$rules))
     {
 
-      // merge model dirty attributes and ignored values for validation
-      $data = ($this->exists) ? $this->get_dirty() : $this->attributes;
-
       // check for overrides
       $rules = (empty($rules)) ? static::$rules : $rules;
       $messages = (empty($messages)) ? static::$messages : $messages;
 
-      // if the model exists, this is an update, so just validate the fields
-      // that are being updated
-      if ($this->exists) {
+      // if the model exists, this is an update
+      if ($this->exists)
+      {
+        // so just validate the fields that are being updated
         $rules = array_intersect_key($rules, $data);
+        // and only include dirty fields
+        $data = $this->get_dirty();
       }
+      else
+      {
+        // otherwise validate everything!
+        $data = $this->attributes;
+      }
+
 
       // construct the validator
       $validator = Validator::make($data, $rules, $messages);
