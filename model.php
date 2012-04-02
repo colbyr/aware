@@ -67,10 +67,11 @@ abstract class Aware extends Eloquent
       // if the model exists, this is an update
       if ($this->exists)
       {
-        // so just validate the fields that are being updated
-        $rules = array_intersect_key($rules, $data);
         // and only include dirty fields
         $data = $this->get_dirty();
+        
+        // so just validate the fields that are being updated
+        $rules = array_intersect_key($rules, $data);
       }
       else
       {
