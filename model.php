@@ -36,11 +36,11 @@ abstract class Aware extends Eloquent
    * @param array $attributes
    * @return void
    */
-  public function __construct($attributes = array())
+  public function __construct($attributes = array(), $exists = false)
   {
     // initialize empty messages object
     $this->errors = new Messages();
-    parent::__construct($attributes);
+    parent::__construct($attributes, $exists);
   }
 
   /**
