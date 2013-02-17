@@ -19,4 +19,4 @@ class ModelTest extends PHPUnit_Framework_TestCase {
 
 }
 
-class TestModel extends \Awareness\Aware\Model {}
+class TestModel extends \Illuminate\Database\Eloquent\Model {}
