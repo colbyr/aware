@@ -1,18 +1,15 @@
-<?php namespace Awareness/Aware;
+<?php namespace Awareness\Aware;
 
-use Illuminate\Database;
-use Illuminate\Support\Contracts\MessageProviderInterface;
-use Illuminate\Support\MessageBag;
-use Illuminate\Validation;
+use \Illuminate\Database\Eloquent;
+use \Illuminate\Support\Contracts\MessageProviderInterface;
+use \Illuminate\Support\MessageBag;
+use \Illuminate\Validation;
 
 /**
  * Aware Models
  *    Self-validating Eloquent Models
  */
 abstract class Model extends Eloquent\Model implements MessageProviderInterface {
-
-  private static
-    $validator = null;
 
   protected
     $error_bag;
@@ -32,12 +29,10 @@ abstract class Model extends Eloquent\Model implements MessageProviderInterface 
      */
     $rules = array();
 
-  function __construct($attributes=array(), $exists=false) {
-    parent::__construct($attributes, $exists);
-    $this->error_bag = new MessageBag();
-  }
-
   function errors() {
+    if (!$this->error_bag) {
+      $this->error_bag = new MessageBag();
+    }
     return $this->error_bag;
   }
 
