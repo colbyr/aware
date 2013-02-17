@@ -13,14 +13,24 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "illuminate/database": "4.0.x",
+        "illuminate/support": "4.0.x",
+        "illuminate/validation": "4.0.x"
     },
     "require_dev": {
         "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
         "psr-0": {
-            "Aware": "src"
+            "Aware": "src/",
+            "Illuminate": "src/"
         }
-    }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.0-dev"
+        }
+    },
+    "minimum-stability": "dev"
 }
