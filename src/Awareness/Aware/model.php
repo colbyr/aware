@@ -62,7 +62,7 @@ abstract class Model extends Eloquent\Model {
       // if the model exists, this is an update
       if ($this->exists) {
         // and only include dirty fields
-        $data = $this->get_dirty();
+        $data = $this->getDirty();
         // so just validate the fields that are being updated
         $rules = array_intersect_key($rules, $data);
       } else {
@@ -101,22 +101,20 @@ abstract class Model extends Eloquent\Model {
   }
 
   /**
-   * on_save
-   *  called evertime a model is saved - to halt the save, return false
+   * Called evertime a model is saved - to halt the save, return false
    *
    * @return bool
    */
-  public function on_save() {
+  public function onSave() {
     return true;
   }
 
   /**
-   * on_force_save
-   *  called evertime a model is force_saved - to halt the force_save, return false
+   * Called evertime a model is forceSaved - to halt the forceSave, return false
    *
    * @return bool
    */
-  public function on_force_save() {
+  public function onForceSave() {
     return true;
   }
 
@@ -125,12 +123,12 @@ abstract class Model extends Eloquent\Model {
    *
    * @param array $rules:array
    * @param array $messages
-   * @param closure $on_save
+   * @param closure $onSave
    * @return Aware|bool
    */
-  public function save($rules=array(), $messages=array(), $on_save=null) {
-    // evaluate on_save
-    $before = is_null($on_save) ? $this->on_save() : $on_save($this);
+  public function save($rules=array(), $messages=array(), $onSave=null) {
+    // evaluate onSave
+    $before = is_null($onSave) ? $this->onSave() : $onSave($this);
 
     // check before & valid, then pass to parent
     return ($before && $this->validate($rules, $messages)) ? parent::save() : false;
@@ -144,9 +142,9 @@ abstract class Model extends Eloquent\Model {
    * @param $messages:array
    * @return Aware|bool
    */
-  public function force_save($rules=array(), $messages=array(), $on_force_save=null) {
-    // execute on_force_save
-    $before = is_null($on_force_save) ? $this->on_force_save() : $on_force_save($this);
+  public function forceSave($rules=array(), $messages=array(), $onForceSave=null) {
+    // execute onForceSave
+    $before = is_null($onForceSave) ? $this->onForceSave() : $onForceSave($this);
 
     // validate the model
     $this->validate($rules, $messages);
