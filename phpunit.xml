@@ -10,6 +10,11 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
+
+    <listeners>
+        <listener class="\Mockery\Adapter\Phpunit\TestListener" file="Mockery/Adapter/Phpunit/TestListener.php"></listener>
+    </listeners>
+
     <testsuites>
         <testsuite name="Aware Test Suite">
             <directory>./tests/</directory>
