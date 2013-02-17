@@ -1,45 +1,59 @@
 <?php namespace Awareness/Aware;
 
 use Illuminate\Database;
+use Illuminate\Support\Contracts\MessageProviderInterface;
 use Illuminate\Support\MessageBag;
+use Illuminate\Validation;
 
 /**
  * Aware Models
  *    Self-validating Eloquent Models
  */
-abstract class Model extends Eloquent\Model {
+abstract class Model extends Eloquent\Model implements MessageProviderInterface {
 
-  /**
-   * Aware Validation Rules
-   *
-   * @var array $rules
-   */
-  public static $rules = array();
+  private static
+    $validator = null;
 
-  /**
-   * Aware Validation Messages
-   *
-   * @var array $messages
-   */
-  public static $messages = array();
+  protected
+    $error_bag;
 
-  /**
-   * Aware Errors
-   *
-   * @var Illuminate\Support\MessageBag $errors
-   */
-  public $errors;
+  public static
+    /**
+     * Aware Validation Messages
+     *
+     * @var array $messages
+     */
+    $messages = array(),
 
-  /**
-   * Create new Aware instance
-   *
-   * @param array $attributes
-   * @return void
-   */
-  public function __construct($attributes = array(), $exists = false) {
-    // initialize empty messages object
-    $this->errors = new MessageBag();
+    /**
+     * Aware Validation Rules
+     *
+     * @var array $rules
+     */
+    $rules = array();
+
+  function __construct($attributes=array(), $exists=false) {
     parent::__construct($attributes, $exists);
+    $this->error_bag = new MessageBag();
+  }
+
+  function errors() {
+    return $this->error_bag;
+  }
+
+  function getMessageBag() {
+    return $this->errors();
+  }
+
+  function getValidationInfo($rules_override=null, $messages_override=null) {
+
+    $data = $this->exists ? $this->getDirty() : $this->attributes;
+
+    $rules = array_intersect_key($rules_override ?: static::$rules, $data);
+
+    return count($rules) > 0 ?
+      array($data, $rules, $messages_override ?: static::$messages) :
+      array(null, null, null);
   }
 
   /**
@@ -50,38 +64,21 @@ abstract class Model extends Eloquent\Model {
    * @param array $messages
    * @return bool
    */
-  public function validate($rules=array(), $messages=array()) {
-    // innocent until proven guilty
+  function isValid($rules_override=null, $messages_override=null) {
     $valid = true;
+    list($data, $rules, $messages) = $this->getValidationInfo($rules_override);
 
-    if(!empty($rules) || !empty(static::$rules)) {
-      // check for overrides
-      $rules = (empty($rules)) ? static::$rules : $rules;
-      $messages = (empty($messages)) ? static::$messages : $messages;
-
-      // if the model exists, this is an update
-      if ($this->exists) {
-        // and only include dirty fields
-        $data = $this->getDirty();
-        // so just validate the fields that are being updated
-        $rules = array_intersect_key($rules, $data);
-      } else {
-        // otherwise validate everything!
-        $data = $this->attributes;
-      }
-
-
-      // construct the validator
+    if ($rules) {
       $validator = Validator::make($data, $rules, $messages);
-      $valid = $validator->valid();
-
-      // if the model is valid, unset old errors
-      if($valid) {
-        $this->errors->messages = array();
-      } else { // otherwise set the new ones
-        $this->errors = $validator->errors;
-      }
+      $valid = $validator->passes();
     }
+
+    if (!$valid) {
+      $this->error_bag = $validator->errors();
+    } else if ($this->error_bag->any()) {
+      $this->error_bag = new MessageBag();
+    }
+
     return $valid;
   }
 
@@ -93,7 +90,7 @@ abstract class Model extends Eloquent\Model {
    * @param string|num|bool|etc $value
    * @return void
    */
-  public function __set($key, $value) {
+  function __set($key, $value) {
     // only update an attribute if there's a change
     if (!array_key_exists($key, $this->attributes) || $value !== $this->$key) {
       parent::__set($key, $value);
@@ -105,7 +102,7 @@ abstract class Model extends Eloquent\Model {
    *
    * @return bool
    */
-  public function onSave() {
+  function onSave() {
     return true;
   }
 
@@ -114,7 +111,7 @@ abstract class Model extends Eloquent\Model {
    *
    * @return bool
    */
-  public function onForceSave() {
+  function onForceSave() {
     return true;
   }
 
@@ -126,12 +123,12 @@ abstract class Model extends Eloquent\Model {
    * @param closure $onSave
    * @return Aware|bool
    */
-  public function save($rules=array(), $messages=array(), $onSave=null) {
+  function save($rules=array(), $messages=array(), $onSave=null) {
     // evaluate onSave
     $before = is_null($onSave) ? $this->onSave() : $onSave($this);
 
     // check before & valid, then pass to parent
-    return ($before && $this->validate($rules, $messages)) ? parent::save() : false;
+    return !($before && $this->isValid($rules, $messages)) ?: parent::save();
   }
 
   /**
@@ -142,12 +139,12 @@ abstract class Model extends Eloquent\Model {
    * @param $messages:array
    * @return Aware|bool
    */
-  public function forceSave($rules=array(), $messages=array(), $onForceSave=null) {
+  function forceSave($rules=array(), $messages=array(), $onForceSave=null) {
     // execute onForceSave
     $before = is_null($onForceSave) ? $this->onForceSave() : $onForceSave($this);
 
     // validate the model
-    $this->validate($rules, $messages);
+    $this->isValid($rules, $messages);
 
     // save regardless of the result of validation
     return $before ? parent::save() : false;
