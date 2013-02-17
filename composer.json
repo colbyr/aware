@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Aware": "src/",
+            "Awareness": "src/",
             "Illuminate": "src/"
         }
     },
