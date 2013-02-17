@@ -4,10 +4,6 @@ use \Mockery as m;
 
 class ModelTest extends PHPUnit_Framework_TestCase {
 
-  static function setUpBeforeClass() {
-    spl_autoload_call('\Awareness\Aware\Model');
-  }
-
   function tearDown() {
     m::close();
   }
@@ -22,3 +18,5 @@ class ModelTest extends PHPUnit_Framework_TestCase {
   }
 
 }
+
+class TestModel extends \Awareness\Aware\Model {}
