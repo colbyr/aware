@@ -14,7 +14,7 @@ class ModelTest extends PHPUnit_Framework_TestCase {
   }
 
   static function genModel() {
-    return m::mock('\Awareness\Aware\Model[]');
+    return m::mock('\Aware[]');
   }
 
 }

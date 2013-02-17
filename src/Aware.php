@@ -1,4 +1,4 @@
-<?php namespace Awareness\Aware;
+<?php
 
 use \Illuminate\Database\Eloquent;
 use \Illuminate\Support\Contracts\MessageProviderInterface;
@@ -9,7 +9,7 @@ use \Illuminate\Validation;
  * Aware Models
  *    Self-validating Eloquent Models
  */
-abstract class Model extends Eloquent\Model implements MessageProviderInterface {
+abstract class Aware extends Eloquent\Model implements MessageProviderInterface {
 
   protected
     $error_bag;

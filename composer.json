@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Awareness": "src/"
+            "Aware": "./src/"
         }
     },
     "minimum-stability": "dev"
