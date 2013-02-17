@@ -1,13 +1,13 @@
-<?php
+<?php namespace Awareness/Aware;
 
-use Laravel\Messages;
+use Illuminate\Database;
+use Illuminate\Support\MessageBag;
 
 /**
  * Aware Models
  *    Self-validating Eloquent Models
  */
-abstract class Aware extends Eloquent
-{
+abstract class Model extends Eloquent\Model {
 
   /**
    * Aware Validation Rules
@@ -26,7 +26,7 @@ abstract class Aware extends Eloquent
   /**
    * Aware Errors
    *
-   * @var Laravel\Messages $errors
+   * @var Illuminate\Support\MessageBag $errors
    */
   public $errors;
 
@@ -36,10 +36,9 @@ abstract class Aware extends Eloquent
    * @param array $attributes
    * @return void
    */
-  public function __construct($attributes = array(), $exists = false)
-  {
+  public function __construct($attributes = array(), $exists = false) {
     // initialize empty messages object
-    $this->errors = new Messages();
+    $this->errors = new MessageBag();
     parent::__construct($attributes, $exists);
   }
 
@@ -51,30 +50,22 @@ abstract class Aware extends Eloquent
    * @param array $messages
    * @return bool
    */
-  public function valid($rules=array(), $messages=array())
-  {
-
+  public function validate($rules=array(), $messages=array()) {
     // innocent until proven guilty
     $valid = true;
 
-    if(!empty($rules) || !empty(static::$rules))
-    {
-
+    if(!empty($rules) || !empty(static::$rules)) {
       // check for overrides
       $rules = (empty($rules)) ? static::$rules : $rules;
       $messages = (empty($messages)) ? static::$messages : $messages;
 
       // if the model exists, this is an update
-      if ($this->exists)
-      {
+      if ($this->exists) {
         // and only include dirty fields
         $data = $this->get_dirty();
-        
         // so just validate the fields that are being updated
         $rules = array_intersect_key($rules, $data);
-      }
-      else
-      {
+      } else {
         // otherwise validate everything!
         $data = $this->attributes;
       }
@@ -85,17 +76,12 @@ abstract class Aware extends Eloquent
       $valid = $validator->valid();
 
       // if the model is valid, unset old errors
-      if($valid)
-      {
+      if($valid) {
         $this->errors->messages = array();
-      }
-      else // otherwise set the new ones
-      {
+      } else { // otherwise set the new ones
         $this->errors = $validator->errors;
       }
-
     }
-
     return $valid;
   }
 
@@ -107,36 +93,30 @@ abstract class Aware extends Eloquent
    * @param string|num|bool|etc $value
    * @return void
    */
-  public function __set($key, $value)
-  {
-
+  public function __set($key, $value) {
     // only update an attribute if there's a change
-    if (!array_key_exists($key, $this->attributes) || $value !== $this->$key)
-    {
+    if (!array_key_exists($key, $this->attributes) || $value !== $this->$key) {
       parent::__set($key, $value);
     }
-
   }
 
   /**
-   * onSave
+   * on_save
    *  called evertime a model is saved - to halt the save, return false
    *
    * @return bool
    */
-  public function onSave()
-  {
+  public function on_save() {
     return true;
   }
 
   /**
-   * onForceSave
+   * on_force_save
    *  called evertime a model is force_saved - to halt the force_save, return false
    *
    * @return bool
    */
-  public function onForceSave()
-  {
+  public function on_force_save() {
     return true;
   }
 
@@ -145,21 +125,15 @@ abstract class Aware extends Eloquent
    *
    * @param array $rules:array
    * @param array $messages
-   * @param closure $onSave
+   * @param closure $on_save
    * @return Aware|bool
    */
-  public function save($rules=array(), $messages=array(), $onSave=null)
-  {
-
-    // validate
-    $valid = $this->valid($rules, $messages);
-
-    // evaluate onSave
-    $before = is_null($onSave) ? $this->onSave() : $onSave($this);
+  public function save($rules=array(), $messages=array(), $on_save=null) {
+    // evaluate on_save
+    $before = is_null($on_save) ? $this->on_save() : $on_save($this);
 
     // check before & valid, then pass to parent
-    return ($before && $valid) ? parent::save() : false;
-
+    return ($before && $this->validate($rules, $messages)) ? parent::save() : false;
   }
 
   /**
@@ -170,18 +144,15 @@ abstract class Aware extends Eloquent
    * @param $messages:array
    * @return Aware|bool
    */
-  public function force_save($rules=array(), $messages=array(), $onForceSave=null)
-  {
+  public function force_save($rules=array(), $messages=array(), $on_force_save=null) {
+    // execute on_force_save
+    $before = is_null($on_force_save) ? $this->on_force_save() : $on_force_save($this);
 
     // validate the model
-    $this->valid($rules, $messages);
-
-    // execute onForceSave
-    $before = is_null($onForceSave) ? $this->onForceSave() : $onForceSave($this);
+    $this->validate($rules, $messages);
 
     // save regardless of the result of validation
     return $before ? parent::save() : false;
-
   }
 
 }
