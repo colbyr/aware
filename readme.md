@@ -1,6 +1,8 @@
 # Aware Model
 Self validating models for Laravel 3.1's built-in Eloquent ORM
 
+[![Build Status](https://travis-ci.org/awareness/aware.png?branch=master)](https://travis-ci.org/awareness/aware)
+
 ## Installation
 
 ### Artisan
