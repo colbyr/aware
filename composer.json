@@ -1,0 +1,31 @@
+{
+    "name": "awareness/aware",
+    "type": "library",
+    "description": "Model validation for L4 Eloquent",
+    "keywords": ["database","eloquent", "laravel", "models", "orm", "sql"],
+    "homepage": "http://github.com/awareness/aware",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Colby Rabideau",
+            "email": "crabideau5691@gmail.com",
+            "homepage": "http://github.com/colbyr"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/database": "4.0.x",
+        "illuminate/support": "4.0.x",
+        "illuminate/validation": "4.0.x"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "mockery/mockery": "0.7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Aware": "./src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
