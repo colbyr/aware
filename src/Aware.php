@@ -42,9 +42,13 @@ abstract class Aware extends Eloquent\Model implements MessageProviderInterface 
 
   function getValidationInfo($rules_override=null, $messages_override=null) {
 
-    $data = $this->exists ? $this->getDirty() : $this->attributes;
-
-    $rules = array_intersect_key($rules_override ?: static::$rules, $data);
+    if ($this->exists) {
+      $data = $this->getDirty();
+      $rules = array_intersect_key($rules_override ?: static::$rules, $data);
+    } else {
+      $data = $this->attributes;
+      $rules = $rules_override ?: static::$rules;
+    }
 
     return count($rules) > 0 ?
       array($data, $rules, $messages_override ?: static::$messages) :
