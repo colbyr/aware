@@ -12,9 +12,16 @@ use \Illuminate\Validation;
 abstract class Aware extends Eloquent\Model implements MessageProviderInterface {
 
   protected
+
+    /**
+     * Error message container
+     *
+     * @var Illuminate\Support\MessageBag
+     */
     $error_bag;
 
   public static
+
     /**
      * Aware Validation Messages
      *
@@ -29,21 +36,45 @@ abstract class Aware extends Eloquent\Model implements MessageProviderInterface 
      */
     $rules = array();
 
-  function errors() {
+  /**
+   * Returns the errors container
+   *
+   * @return Illuminate\Support\MessageBag
+   */
+  function getErrors() {
     if (!$this->error_bag) {
       $this->error_bag = new MessageBag();
     }
     return $this->error_bag;
   }
 
+  /**
+   * Returns attirbutes with updated values
+   *
+   * @return array
+   */
+  function getChanged() {
+    return array_diff($this->attributes, $this->original);
+  }
+
+  /**
+   * Returns the errors container
+   *
+   * @return Illuminate\Support\MessageBag
+   */
   function getMessageBag() {
     return $this->errors();
   }
 
+  /**
+   * Returns rules and data that needs validating
+   *
+   * @return array
+   */
   function getValidationInfo($rules_override=null, $messages_override=null) {
 
     if ($this->exists) {
-      $data = $this->getDirty();
+      $data = $this->getChanged();
       $rules = array_intersect_key($rules_override ?: static::$rules, $data);
     } else {
       $data = $this->attributes;
@@ -82,21 +113,6 @@ abstract class Aware extends Eloquent\Model implements MessageProviderInterface 
   }
 
   /**
-   * Magic Method for setting Aware attributes.
-   *    ignores unchanged attibutes delegates to Eloquent
-   *
-   * @param string $key
-   * @param string|num|bool|etc $value
-   * @return void
-   */
-  function __set($key, $value) {
-    // only update an attribute if there's a change
-    if (!array_key_exists($key, $this->attributes) || $value !== $this->$key) {
-      parent::__set($key, $value);
-    }
-  }
-
-  /**
    * Called evertime a model is saved - to halt the save, return false
    *
    * @return bool
@@ -115,28 +131,27 @@ abstract class Aware extends Eloquent\Model implements MessageProviderInterface 
   }
 
   /**
-   * Save
+   * Save the model if it is valid
    *
-   * @param array $rules:array
-   * @param array $messages
-   * @param closure $onSave
-   * @return Aware|bool
+   * @param  array
+   * @param  array
+   * @param  closure
+   * @return bool
    */
   function save($rules=array(), $messages=array(), $onSave=null) {
     // evaluate onSave
     $before = is_null($onSave) ? $this->onSave() : $onSave($this);
 
     // check before & valid, then pass to parent
-    return !($before && $this->isValid($rules, $messages)) ?: parent::save();
+    return ($before && $this->isValid($rules, $messages)) ? parent::save() : false;
   }
 
   /**
-   * Force Save
-   *    attempts to save model even if it doesn't validate
+   * Attempts to save model even if it doesn't validate
    *
-   * @param $rules:array
-   * @param $messages:array
-   * @return Aware|bool
+   * @param  array
+   * @param  array
+   * @return bool
    */
   function forceSave($rules=array(), $messages=array(), $onForceSave=null) {
     // execute onForceSave

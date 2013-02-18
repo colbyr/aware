@@ -10,7 +10,7 @@ class ModelTest extends PHPUnit_Framework_TestCase {
 
   function testErrorsMethod() {
     $model = static::genModel();
-    $this->assertInstanceOf('\Illuminate\Support\MessageBag', $model->errors());
+    $this->assertInstanceOf('\Illuminate\Support\MessageBag', $model->getErrors());
   }
 
   static function genModel() {
