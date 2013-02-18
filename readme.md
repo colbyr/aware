@@ -1,6 +1,9 @@
 # Aware Model
 Self validating models for Laravel 3.1's built-in Eloquent ORM
 
+## Laravel 4
+If you looking to include Aware in your laravel 4 project, you can [find the repository here](https://github.com/awareness/aware).
+
 ## Installation
 
 ### Artisan
