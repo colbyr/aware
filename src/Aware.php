@@ -70,7 +70,7 @@ abstract class Aware extends Eloquent\Model implements MessageProviderInterface 
 
     if (!$valid) {
       $this->error_bag = $validator->errors();
-    } else if ($this->error_bag->any()) {
+    } else if ($this->error_bag && $this->error_bag->any()) {
       $this->error_bag = new MessageBag();
     }
 
