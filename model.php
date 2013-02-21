@@ -142,7 +142,7 @@ abstract class Aware extends Eloquent
 
   /**
    * afterSave
-   *  called everytime afeter a model is saved.
+   *  called every time after a model is saved
    *
    * @return void
    */
