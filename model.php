@@ -69,7 +69,7 @@ abstract class Aware extends Eloquent
       {
         // and only include dirty fields
         $data = $this->get_dirty();
-        
+
         // so just validate the fields that are being updated
         $rules = array_intersect_key($rules, $data);
       }
@@ -141,6 +141,17 @@ abstract class Aware extends Eloquent
   }
 
   /**
+   * afterSave
+   *  called everytime afeter a model is saved.
+   *
+   * @return void
+   */
+  public function afterSave()
+  {
+      return true;
+  }
+
+  /**
    * Save
    *
    * @param array $rules:array
@@ -148,7 +159,7 @@ abstract class Aware extends Eloquent
    * @param closure $onSave
    * @return Aware|bool
    */
-  public function save($rules=array(), $messages=array(), $onSave=null)
+  public function save($rules=array(), $messages=array(), $onSave=null, $afterSave=null)
   {
 
     // validate
@@ -157,8 +168,11 @@ abstract class Aware extends Eloquent
     // evaluate onSave
     $before = is_null($onSave) ? $this->onSave() : $onSave($this);
 
+    // evaluate afterSave
+    $after = is_null($afterSave) ? $this->afterSave() : $afterSave();
+
     // check before & valid, then pass to parent
-    return ($before && $valid) ? parent::save() : false;
+    return ($before && $valid) ? parent::save() && $after : false;
 
   }
 
@@ -170,7 +184,7 @@ abstract class Aware extends Eloquent
    * @param $messages:array
    * @return Aware|bool
    */
-  public function force_save($rules=array(), $messages=array(), $onForceSave=null)
+  public function force_save($rules=array(), $messages=array(), $onForceSave=null, $afterSave=null)
   {
 
     // validate the model
@@ -179,8 +193,11 @@ abstract class Aware extends Eloquent
     // execute onForceSave
     $before = is_null($onForceSave) ? $this->onForceSave() : $onForceSave($this);
 
+    // evaluate afterSave
+    $after = is_null($afterSave) ? $this->afterSave() : $afterSave();
+
     // save regardless of the result of validation
-    return $before ? parent::save() : false;
+    return $before ? parent::save() && $after : false;
 
   }
 
